@@ -16,6 +16,7 @@ UWatcherComponent::UWatcherComponent()
 	SightSense->DetectionByAffiliation.bDetectNeutrals = true;
 
 	SightSense->SetMaxAge(0.5f);
+	SightSense->PeripheralVisionAngleDegrees = 45.f;
 
 	SensesConfig.Add(SightSense);
 
@@ -56,7 +57,25 @@ void UWatcherComponent::Process(UPARAM(ref)AActor* Source, UPARAM(ref) FAIStimul
 	}
 }
 
-void UWatcherComponent::MakeLight()
+void UWatcherComponent::BeginPlay()
+{
+	SightSense = NewObject<UAISenseConfig_Sight>();
+
+	SightSense->DetectionByAffiliation.bDetectEnemies = true;
+	SightSense->DetectionByAffiliation.bDetectFriendlies = true;
+	SightSense->DetectionByAffiliation.bDetectNeutrals = true;
+
+	SightSense->SetMaxAge(0.5f);
+	SightSense->PeripheralVisionAngleDegrees = 45.f;
+
+	SensesConfig.Add(SightSense);
+
+	DominantSense = SightSense->GetSenseImplementation();
+	
+	UE_LOG(WatcherLog, Log, (TEXT("WatcherComponent set up on beginplay.")));
+}
+
+void UWatcherComponent::CheckDistances()
 {
 
 	if (SpottedActors.Num() > 0)
@@ -94,5 +113,5 @@ void UWatcherComponent::MakeLight()
 		UE_LOG(WatcherLog, Log, TEXT("WatcherComponent: Actor List empty. Aborting distance calculation."));
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(Cycle, this, &UWatcherComponent::MakeLight, SightSense->GetMaxAge(), false);
+	GetWorld()->GetTimerManager().SetTimer(Cycle, this, &UWatcherComponent::CheckDistances, SightSense->GetMaxAge(), false);
 }

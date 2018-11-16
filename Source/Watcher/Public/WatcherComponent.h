@@ -25,14 +25,16 @@ public:
 	DECLARE_EVENT_OneParam(OnPerceptionUpdated, MakeLight, TArray<AActor*> &)
 
 	UFUNCTION(BlueprintCallable)
-	void MakeLight();
+	void CheckDistances();
 
 	UFUNCTION(BlueprintCallable)
 		void Process(UPARAM(ref) AActor* Source, UPARAM(ref) FAIStimulus& Stimulus);
 
+protected:
+	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+		UAISenseConfig_Sight* SightSense;
 private:
-	UPROPERTY()
-	UAISenseConfig_Sight* SightSense;
 
 	UPROPERTY()
 		TArray<AActor*> SpottedActors;

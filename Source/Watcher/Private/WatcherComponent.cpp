@@ -97,6 +97,21 @@ void UWatcherComponent::CheckDistances()
 		ActorMap.GenerateValueArray(Distances);
 		Distances.Sort();
 
+		if (GEngine)
+		{ 
+			GEngine->ClearOnScreenDebugMessages();
+
+			for (int i = 0; i < Distances.Num(); i++)
+			{
+				float Distance = Distances[i];
+				AActor* Actor = *ActorMap.FindKey(Distance);
+
+				FString string = FString::FromInt(i+1) + FString(TEXT(": ")) + Actor->GetName() + 
+					FString(TEXT(", Distance: ")) + FString::SanitizeFloat(Distance);
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, string);
+			}
+		}
+
 		//Set nearest color
 		AActor* NearestActor = *ActorMap.FindKey(Distances.Last());
 		UWantedComponent* NearestWanted = (UWantedComponent*)NearestActor->GetComponentByClass(UWantedComponent::StaticClass());

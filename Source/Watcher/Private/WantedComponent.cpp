@@ -38,8 +38,10 @@ void UWantedComponent::BeginPlay()
 	PointLight->SetVisibility(false);
 
 	Stimuli->RegisterForSense(UAISense_Sight::StaticClass());
+	Stimuli->Activate(true);
 
 	UE_LOG(WatcherLog, Log, (TEXT("WantedComponent set up lights and registered stimuli.")));
+	RegisterComponent();
 	// ...
 	
 }
